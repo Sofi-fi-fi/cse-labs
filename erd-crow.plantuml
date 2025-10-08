@@ -74,7 +74,6 @@ entity "Lesson" as lesson {
   F_KEY(tutor_subject_id)
   F_KEY(schedule_id)
   lesson_date
-  start_time
   duration_minutes
 }
 
