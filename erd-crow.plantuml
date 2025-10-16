@@ -75,6 +75,7 @@ entity "Lesson" as lesson {
   F_KEY(schedule_id)
   lesson_date
   duration_minutes
+  status
 }
 
 entity "Review" as review {
