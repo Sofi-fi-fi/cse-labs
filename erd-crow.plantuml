@@ -1,4 +1,4 @@
-@startuml tutor_platform_core_erd
+@startuml tutor_platform_erd
 
 !define PF_KEY(x) **PK & FK** x
 !define P_KEY(x) **PK** x
@@ -6,48 +6,48 @@
 !theme carbon-gray
 
 skinparam arrow {
-	Thickness 1
-	Color #262626
-	FontColor #262626
+  Thickness 1
+  Color #262626
+  FontColor #262626
 }
 
 left to right direction
 
+title Система пошуку персонального репетитора - ER діаграма
+
 entity "User" as user {
   P_KEY(user_id)
   --
+  email
+  password_hash
   first_name
   last_name
-  email
   phone
-  role
+  user_type
   registration_date
 }
 
 entity "Student" as student {
-  PF_KEY(student_id) → User(user_id)
+  PF_KEY(student_id)
+  F_KEY(city_id)
   --
+  age
   school_grade
-  city
 }
 
 entity "Tutor" as tutor {
-  PF_KEY(tutor_id) → User(user_id)
+  PF_KEY(tutor_id)
+  F_KEY(city_id)
   --
+  age
+  years_experience
   education
-  experience_years
-  city
-  rating
-}
-
-entity "Schedule" as schedule {
-  P_KEY(schedule_id)
-  --
-  F_KEY(tutor_id)
-  day_of_week
-  start_time
-  end_time
-  is_available
+  about_me
+  online_available
+  offline_available
+  address
+  average_rating
+  total_reviews
 }
 
 entity "Subject" as subject {
@@ -55,52 +55,94 @@ entity "Subject" as subject {
   --
   name
   category
+  description
 }
 
-entity "Tutor_Subject" as tutor_subject {
+entity "TeachingLevel" as teaching_level {
+  P_KEY(level_id)
+  --
+  name
+  position
+  description
+}
+
+entity "City" as city {
+  P_KEY(city_id)
+  --
+  name
+  region
+  country
+}
+
+entity "TutorSubject" as tutor_subject {
   P_KEY(tutor_subject_id)
   --
   F_KEY(tutor_id)
   F_KEY(subject_id)
-  price
-  format_online
-  format_offline
+  F_KEY(level_id)
+  hourly_rate
 }
 
-entity "Lesson" as lesson {
-  P_KEY(lesson_id)
+entity "Schedule" as schedule {
+  P_KEY(schedule_id)
+  --
+  F_KEY(tutor_id)
+  date
+  start_time
+  end_time
+  is_available
+  created_at
+}
+
+entity "Booking" as booking {
+  P_KEY(booking_id)
   --
   F_KEY(student_id)
-  F_KEY(tutor_subject_id)
+  F_KEY(tutor_id)
+  F_KEY(subject_id)
+  F_KEY(level_id)
   F_KEY(schedule_id)
-  lesson_date
-  duration_minutes
+  format
   status
+  created_at
+  notes
 }
 
 entity "Review" as review {
   P_KEY(review_id)
   --
-  F_KEY(tutor_id)
+  F_KEY(booking_id)
   F_KEY(student_id)
+  F_KEY(tutor_id)
   rating
   comment
+  created_at
   is_anonymous
-  created_date
 }
 
-user ||--|| student : "1:1"
-user ||--|| tutor : "1:1"
+user ||--|| student : "ISA"
+user ||--|| tutor : "ISA"
 
-tutor ||--o{ review : "1:N"
-tutor ||--|{ tutor_subject : "1:N"
-subject ||--|{ tutor_subject : "1:N"
+city ||--o{ student : "lives_in"
+city ||--o{ tutor : "tutor_located_in"
 
-student ||--o{ review : "1:N"
-student ||--o{ lesson : "1:N"
-tutor_subject ||--o{ lesson : "1:N"
+tutor ||--o{ tutor_subject : "offers"
+subject ||--o{ tutor_subject : "taught_as"
+teaching_level ||--o{ tutor_subject : "at_level"
 
-tutor ||--o{ schedule : "1:N"
-schedule ||--o{ lesson : "1:N"
+tutor ||--o{ schedule : "has_schedule"
+
+student ||--o{ booking : "books"
+tutor ||--o{ booking : "teaches"
+subject ||--o{ booking : "for_subject"
+teaching_level ||--o{ booking : "at_level"
+
+schedule ||--o| booking : "reserves_slot"
+
+booking ||--o| review : "has_review"
+
+student ||--o{ review : "writes"
+tutor ||--o{ review : "receives"
+
 
 @enduml
