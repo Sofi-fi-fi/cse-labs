@@ -1,0 +1,93 @@
+@startuml usecasediagram
+!pragma layout smetana
+
+skinparam ArrowColor #586e75
+skinparam ArrowThickness 2
+skinparam shadowing true
+
+skinparam actor {
+  FontSize 12
+  FontName "Arial"
+  Margin 20
+}
+
+skinparam usecase {
+  BackgroundColor #FFFFFF
+  BorderColor #999999
+  FontSize 11
+  FontName "Verdana"
+  Padding 10
+}
+
+left to right direction
+
+title Система пошуку персонального репетитора - Діаграма прецедентів
+
+actor "Учень" as Student
+actor "Репетитор" as Tutor
+
+usecase "Застосувати фільтри пошуку" as UC1
+usecase "Встановити фільтр по предмету" as UC2
+usecase "Встановити фільтр по місту" as UC3
+usecase "Встановити фільтр за форматом навчання" as UC4
+usecase "Встановити фільтр за ціною" as UC5
+usecase "Встановити фільтр за рівнем викладання" as UC6
+usecase "Встановити фільтр за досвідом роботи" as UC7
+usecase "Переглянути профіль репетитора" as UC8
+usecase "Переглянути відгуки" as UC9
+usecase "Переглянути розклад" as UC10
+usecase "Забронювати заняття" as UC11
+usecase "Скасувати бронювання" as UC12
+usecase "Залишити відгук" as UC13
+usecase "Додати коментар" as UC14
+usecase "Залишити відгук анонімно" as UC15
+
+usecase "Встановити вільні години в розкладі" as UC16
+usecase "Додати інформацію про освіту і кваліфікацію" as UC17
+usecase "Встановити предмети викладання" as UC18
+usecase "Встановити рівні викладання" as UC19
+usecase "Встановити ціну за заняття" as UC20
+usecase "Встановити формат проведення заняття" as UC21
+usecase "Заняття offline" as UC22
+usecase "Заняття online " as UC23
+usecase "Додати адресу проведення занять" as UC24
+usecase "Вказати додаткову інформацію про себе" as UC25
+usecase "Підтвердити бронювання" as UC26
+usecase "Відхилити бронювання" as UC27
+
+Student --> UC1
+Student --> UC8
+Student --> UC11
+Student --> UC12
+Student --> UC13
+
+Tutor --> UC16
+Tutor --> UC17
+Tutor --> UC18
+Tutor --> UC19
+Tutor --> UC20
+Tutor --> UC21
+Tutor --> UC24
+Tutor --> UC25
+Tutor --> UC26
+Tutor --> UC27
+
+UC1 <|-- UC2 : extend
+UC1 <|-- UC3 : extend
+UC1 <|-- UC4 : extend
+UC1 <|-- UC5 : extend
+UC1 <|-- UC6 : extend
+UC1 <|-- UC7 : extend
+UC8 <|-- UC9 : extend
+UC8 <|-- UC10 : extend
+UC12 ..> UC11 : use
+UC13 <|-- UC14 : extend
+UC13 <|-- UC15 : extend
+
+UC22 ..> UC24 : use
+UC21 <|-- UC22 : extend
+UC21 <|-- UC23 : extend
+UC26 ..> UC11 : use
+UC27 ..> UC11 : use
+
+@enduml
