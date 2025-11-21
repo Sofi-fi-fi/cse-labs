@@ -1,0 +1,42 @@
+@startuml umlsequence
+
+skinparam sequence {
+  ArrowColor #446D8D
+  LifeLineBorderColor #446D8D
+  ParticipantFontSize 12
+  ParticipantFontName "Verdana"
+  LifeLineBackgroundColor #E3EEF8
+  NoteBackgroundColor #F1F7FB
+  NoteBorderColor #A1BFD4
+}
+
+title "Підтвердження/скасування бронювання"
+
+actor "Репетитор" as Tutor
+participant ":BookingService" as BookingService
+participant ":Database" as Database
+actor "Учень" as Student
+
+Tutor -> BookingService: 1. Відповісти на запит
+alt Підтвердження
+	activate BookingService
+	BookingService -> Database: 2. Зміна статусу бронювання на "confirmed"
+	activate Database
+	Database --> BookingService: 3. return успіх
+	BookingService -> Database: 4. Зміна статусу слота is_available = false
+	Database --> BookingService: 5. return успіх
+	deactivate Database
+	BookingService -> Student: 6. Сповіщення про підтвердження бронювання
+	BookingService --> Tutor: 7. Деталі бронювання
+else Скасування
+	BookingService -> Database: 8. Зміна статусу бронювання на "cancelled"
+	activate Database
+	Database --> BookingService: 9. return успіх
+	deactivate Database
+	BookingService -> Student: 10. Сповіщення про скасування бронювання
+	BookingService --> Tutor: 11. Бронювання скасовано
+	deactivate BookingService
+end
+
+destroy BookingService
+@enduml

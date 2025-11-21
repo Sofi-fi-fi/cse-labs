@@ -1,0 +1,40 @@
+@startuml umlsequence
+
+skinparam sequence {
+  ArrowColor #446D8D
+  LifeLineBorderColor #446D8D
+  ParticipantFontSize 12
+  ParticipantFontName "Verdana"
+  LifeLineBackgroundColor #E3EEF8
+  NoteBackgroundColor #F1F7FB
+  NoteBorderColor #A1BFD4
+}
+
+title "Створення запиту на бронювання"
+
+actor "Учень" as Student
+participant ":BookingService" as BookingService
+participant ":Database" as Database
+actor "Репетитор" as Tutor
+
+Student -> BookingService: 1. Забронювати заняття
+activate BookingService
+BookingService -> Database: 2. Перевірка слоту
+activate Database
+Database --> BookingService: 3. дані слоту
+deactivate Database
+alt Слот доступний
+	BookingService -> Database: 4. Створення бронювання зі статусом "pending"
+	activate Database
+	Database --> BookingService: 5. return успіх
+	deactivate Database
+	BookingService -> Tutor: 6. Сповіщення про запит на бронювання
+	BookingService --> Student: 7. Статус бронювання "pending"
+else Слот недоступний
+	BookingService --> Student: 8. Помилка бронювання
+	deactivate BookingService
+end
+
+destroy BookingService
+
+@enduml

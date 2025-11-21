@@ -1,0 +1,52 @@
+@startuml umlsequence
+
+skinparam sequence {
+  ArrowColor #446D8D
+  LifeLineBorderColor #446D8D
+  ParticipantFontSize 12
+  ParticipantFontName "Verdana"
+  LifeLineBackgroundColor #E3EEF8
+  NoteBackgroundColor #F1F7FB
+  NoteBorderColor #A1BFD4
+}
+
+title "Реєстрація і налаштування профілю репетитора"
+
+actor "Tutor" as Tutor
+participant ":AuthService" as AuthService
+participant ":ProfileService" as ProfileService
+participant ":Database" as Database
+
+Tutor -> AuthService: 1. Зареєструватися як репетитор
+activate AuthService
+AuthService -> Database: 2. Створення запису у таблиці User
+activate Database
+Database --> AuthService: 3. return успіх
+deactivate Database
+AuthService -> Database: 4. Створення запису у таблиці Tutor
+activate Database
+Database --> AuthService: 5. return успіх
+deactivate Database
+AuthService --> Tutor: 6. Успішне створення профілю
+deactivate AuthService
+Tutor -> ProfileService: 7. Оновити профіль
+activate ProfileService
+ProfileService -> Database: 8. Оновити дані
+activate Database
+Database --> ProfileService: 9. return успіх
+deactivate Database
+ProfileService --> Tutor: 10. Успішне оновлення профілю
+deactivate ProfileService
+Tutor -> ProfileService: 11. Додати предмет викладання
+activate ProfileService
+ProfileService -> Database: 12. Додати дані про предмет
+activate Database
+Database --> ProfileService: 13. return успіх
+deactivate Database
+ProfileService --> Tutor: 14. Успішне оновлення предметів
+deactivate ProfileService
+
+destroy AuthService
+destroy ProfileService
+
+@enduml
