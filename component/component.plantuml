@@ -1,0 +1,110 @@
+@startuml umlcomponent
+!theme vibrant
+
+skinparam componentStyle uml1
+skinparam linetype ortho
+
+skinparam component {
+	Padding 50
+	RoundCorner 15
+}
+
+database "PostgreSQL" as Database <<database>>
+
+package "Client Layer" {
+	component [Web Application] as WebApp <<component>>
+	component [Mobile Application] as MobileApp <<component>>
+}
+
+package "API Gateway" {
+	component [API Gateway] as APIGateway <<component>>
+}
+
+package "External Integrations" {
+	component [Email Service] as EmailService <<component>>
+}
+
+package "Business Logic Layer" {
+	component [Authentication Service] as AuthService <<component>>
+	component [Search & Filter Service] as SearchService <<component>>
+	component [Tutor Profile Service] as TutorProfileService <<component>>
+	component [Booking Service] as BookingService <<component>>
+	component [Recommendation Engine] as RecommendationEngine <<component>>
+	component [Review Service] as ReviewService <<component>>
+	component [Notification Service] as NotificationService <<component>>
+}
+
+package "Data Access Layer" {
+	component [User Repository] as UserRepo <<component>>
+	component [Tutor Repository] as TutorRepo <<component>>
+	component [Review Repository] as ReviewRepo <<component>>
+	component [Booking Repository] as BookingRepo <<component>>
+	component [City Repository] as CityRepo <<component>>
+	component [Student Repository] as StudentRepo <<component>>
+	component [Teaching Level Repository] as TeachingLevelRepo <<component>>
+	component [Tutor-Subject Repository] as TutorSubjectRepo <<component>>
+	component [Subject Repository] as SubjectRepo <<component>>
+	component [Schedule Repository] as ScheduleRepo <<component>>
+	component [DbContext] as DbContext <<component>>
+}
+
+WebApp -down- APIGateway : REST API
+MobileApp -down- APIGateway : REST API
+
+APIGateway -down- AuthService : Auth API
+APIGateway -down- SearchService : Search API
+APIGateway -down- TutorProfileService : Profile API
+APIGateway -down- BookingService : Booking API
+APIGateway -down- RecommendationEngine : Recommendation API
+APIGateway -down- ReviewService : Review API
+APIGateway -down- NotificationService : Notification API
+
+
+AuthService -right- SearchService
+AuthService -down- UserRepo
+AuthService -down- StudentRepo
+AuthService -down- TutorRepo
+
+SearchService -left- RecommendationEngine
+SearchService -down- TutorSubjectRepo
+SearchService -down- SubjectRepo
+SearchService -down- CityRepo
+
+ReviewService -right- NotificationService
+ReviewService -down- ReviewRepo
+ReviewService -down- StudentRepo
+ReviewService -down- TutorRepo
+ReviewService -down- BookingRepo
+
+TutorProfileService -down- UserRepo
+TutorProfileService -down- TutorRepo
+TutorProfileService -down- TeachingLevelRepo
+TutorProfileService -down- TutorSubjectRepo
+TutorProfileService -down- SubjectRepo
+TutorProfileService -down- ScheduleRepo
+TutorProfileService -down- CityRepo
+
+BookingService -right- NotificationService
+BookingService -down- BookingRepo
+BookingService -down- TutorSubjectRepo
+BookingService -down- StudentRepo
+BookingService -down- ScheduleRepo
+
+NotificationService -right- EmailService
+NotificationService -down- SubjectRepo
+NotificationService -down- UserRepo
+
+UserRepo -down- DbContext
+TutorRepo -down- DbContext
+ReviewRepo -down- DbContext
+BookingRepo -down- DbContext
+CityRepo -down- DbContext
+StudentRepo -down- DbContext
+TeachingLevelRepo -down- DbContext
+TutorSubjectRepo -down- DbContext
+SubjectRepo -down- DbContext
+ScheduleRepo -down- DbContext
+
+DbContext -down- Database
+
+@enduml
